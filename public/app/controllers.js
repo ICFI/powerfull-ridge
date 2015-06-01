@@ -22,7 +22,8 @@
 
             $scope.$location = $location;
             $scope.routeData = routeData;
-
+            
+            
             $rootScope.$on("$routeChangeSuccess", function () {
                 setPageTitle();
             });
@@ -40,7 +41,7 @@
 
                 init = function () {
                     $scope.words = [];
-
+                    $scope.test=5;
                     tagCloudItems.get().then(
                         function (data) {
                             angular.copy(data, $scope.words);
@@ -60,7 +61,7 @@
             
             $scope.statusMessage    = '';
             $scope.statusType       = '';
-
+            $scope.test=5;
 
             init();
         }

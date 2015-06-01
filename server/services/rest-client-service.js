@@ -1,7 +1,7 @@
 "use strict";
 
 var bodyParser = require("body-parser");
-//var ElasticSearchQuery = require("../domain/essearch-query-template.js");
+var ElasticSearchQuery = require("../domain/essearch-query-template.js");
 
 
 module.exports = function(searchProxy, app) {
@@ -23,4 +23,15 @@ module.exports = function(searchProxy, app) {
       {text: "Nam et", weight: 5},
       {text: "Leo", weight: 4}]);
     });
+    
+    app.get('/api/v1/tagcloud', function(req, res) {
+      var elasticTemplate = new ElasticSearchQuery();
+      var args = elasticTemplate.getCisSignificantTerms();
+      searchProxy.doSearch("https://18f-3263339722.us-east-1.bonsai.io/uscis/_search", args)
+        .then(searchProxy.parseTermsResults)
+        .then(function(collection){
+          res.send(collection);
+        });
+    });    
+    
 };
