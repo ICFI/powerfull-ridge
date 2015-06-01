@@ -608,9 +608,9 @@ var results = {
 
 
 describe("The Elastic Search API Interface", function() {
-    
+
     it("should be able to read the environment variables for authenticating against the search server", function(done){
-        
+
         //MUST BE SET IN THE TEST ENVIRONMENT BEFORE EXECUTION
         //console.log(process.env.ES_USER);
         expect(process.env.ES_USER).to.be.a("string");
@@ -619,30 +619,32 @@ describe("The Elastic Search API Interface", function() {
         expect(process.env.ES_PWD).to.have.length(10);
         done();
     });
-    
+
     it("should be able to create an instance of the significant terms query", function(done){
             var elasticTemplate = new ElasticSearchQuery();
             var args = elasticTemplate.getCisSignificantTerms();
             expect(args).to.be.a("object");
             done();
     });
-    
+
     it("should be able to query the Elastic Search server and return a result", function(done){
-       
+
             var elasticTemplate = new ElasticSearchQuery();
-            var args = elasticTemplate.getQuery();
+            var args = elasticTemplate.getCisSignificantTerms();
             //console.log(JSON.stringify(args));
-            searchData.doSearch("https://18f-3263339722.us-east-1.bonsai.io/health/_search?pretty", args)
+            searchData.doSearch("https://18f-3263339722.us-east-1.bonsai.io/uscis/_search?pretty", args)
             .then(function(collection) {
+              collection=JSON.parse(collection);
                 console.log(collection);
-                expect(collection.aggregations.length).to.be.at.least(1);
+
+                expect(collection.aggregations.months.buckets.length).to.be.at.least(1);
                 done();
             })
             .catch(function(e) {
                 console.error("Exception: " + e);
-            }); 
+            });
     });
-    
+
     it("should be able to parse the results into a meaningful format for rendering to the front end", function(done){
         searchData.parseTermsResults(results)
         .then(function(result){
@@ -651,7 +653,7 @@ describe("The Elastic Search API Interface", function() {
         })
        .catch(function(e) {
             console.error("Exception: " + e);
-        }); 
+        });
     });
-    
+
 });
